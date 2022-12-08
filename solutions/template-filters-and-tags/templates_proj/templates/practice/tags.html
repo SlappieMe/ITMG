@@ -1,0 +1,71 @@
+{% extends "_base.html" %}
+{% load common_tags %}
+
+{% block title %}Tags{% endblock %}
+{% block main %}
+  <style>
+    .odd {
+      font-style: italic;
+    }
+  </style>
+  <h2>Tags</h2>
+  <ul>
+    {% for beatle in beatles %}
+      <li>{{ beatle.firstname }} {{ beatle.lastname }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Filters with Tags</h3>
+  <ul>
+    {% for beatle in beatles|dictsort:'firstname' %}
+      <li>{{ beatle.firstname|upper }} {{ beatle.lastname|upper }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>for Loops</h3>
+  <ol>
+    {% for item, remaining in inventory.items %}
+      <li>{{ item }}: {{ remaining }}</li>
+    {% endfor %}
+  </ol>
+  <ol>
+    {% for fruit in fruits %}
+      <li>{{ fruit }}</li>
+    {% endfor %}
+  </ol>
+  <ol>
+    {% for fruit in fruits reversed %}
+      <li>{{ fruit }}</li>
+    {% endfor %}
+  </ol>
+  <ul><!--joke_list is empty-->
+    {% for joke in joke_list %}
+      <li>{{ joke.question }}</li>
+    {% empty %}
+      <li>Sorry, there are no jokes.</li>
+    {% endfor %}
+  </ul>
+
+  <h3><code>cycle</code></h3>
+  <ol>
+    {% for fruit in fruits %}
+      <li class="{% cycle 'odd' 'even' %}">{{ fruit }}</li>
+    {% endfor %}
+  </ol>
+
+  <h3><code>with</code></h3>
+  {% with joke_count=5 %}
+    {{ joke_count }} joke{{ joke_count|pluralize }} that match your search.
+  {% endwith %}
+
+  <h3><code>ifchanged</code></h3>
+  {% for food in foods %}
+    {% ifchanged food.category %}
+      <h4>{{ food.category }}</h4>
+    {% endifchanged %}
+    <p>{{ food.name }}</p>
+  {% endfor %}
+
+  <h3><code>repeat</code> Custom Tag</h3>
+  <p>{% repeat company 3 %}</p>
+{% endblock %}

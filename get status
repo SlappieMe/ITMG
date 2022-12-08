@@ -1,0 +1,11 @@
+core.repositoryformatversion=0
+core.filemode=false
+core.bare=false
+core.logallrefupdates=true
+core.symlinks=false
+core.ignorecase=true
+user.name=SlappieMe
+user.email=nickvanbrenk@hotmail.com
+credential.helper=store
+remote.origin.url=https://github.com/SlappieMe/ITMG
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*

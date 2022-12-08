@@ -1,0 +1,143 @@
+{% extends "_base.html" %}
+{% load common_filters %}
+
+{% block title %}Filters{% endblock %}
+{% block main %}
+  <h2>Filters</h2>
+  <h3>Link</h3>
+  <a href="{{ url }}">{{ company }}</a>
+
+  <h3>First Filters</h3>
+  {{ company|upper }}:
+  {{ url|urlize }}
+
+  <h3><code>date</code> and <code>time</code></h3>
+  <ul>
+    <li>{{ moon_landing }}</li>
+    <li>{{ moon_landing|date }}</li>
+    <li>{{ moon_landing|date:"DATE_FORMAT" }}</li>
+    <li>{{ moon_landing|date:"DATETIME_FORMAT" }}</li>
+    <li>{{ moon_landing|date:"SHORT_DATE_FORMAT" }}</li>
+    <li>{{ moon_landing|date:"SHORT_DATETIME_FORMAT" }}</li>
+    <li>{{ moon_landing|date:"Y-m-d H:i" }}</li>
+    <li>{{ moon_landing|time }}</li>
+    <li>{{ moon_landing|time:'G:i:s' }}</li>
+  </ul>
+
+  <h3><code>timesince</code></h3>
+  {{ moon_landing|timesince }}<br>
+  {{ launch_date|timesince:moon_landing }}
+
+  <h3><code>timeuntil</code></h3>
+  {{ century22|timeuntil }}<br>
+  {{ century22|timeuntil:moon_landing }}
+
+  <h3><code>default</code></h3>
+  <ol>
+    {% for item, remaining in inventory.items %}
+      <li>{{ item }}: {{ remaining|default:"out of stock" }}</li>
+    {% endfor %}
+  </ol>
+
+  <h3><code>floatformat</code></h3>
+  <table class="table table-striped table-sm" style="max-width:30rem">
+    <thead>
+      <tr>
+        <th>Filter \ Value of <code>i</code>:</th>
+        <th><code>1000.0</code></th>
+        <th><code>1000.11</code></th>
+        <th><code>3.14159</code></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>i|floatformat</code></td>
+        <td>{{ 1000|floatformat }}</td>
+        <td>{{ 1000.1|floatformat }}</td>
+        <td>{{ 3.1|floatformat }}</td>
+      </tr>
+      <tr>
+        <td><code>i|floatformat:2</code></td>
+        <td>{{ 1000|floatformat:2 }}</td>
+        <td>{{ 1000.1|floatformat:2 }}</td>
+        <td>{{ 3.1|floatformat:2 }}</td>
+      </tr>
+      <tr>
+        <td><code>i|floatformat:0</code></td>
+        <td>{{ 1000|floatformat:0 }}</td>
+        <td>{{ 1000.1|floatformat:0 }}</td>
+        <td>{{ 3.1|floatformat:0 }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3><code>length</code> and <code>pluralize</code></h3>
+  <ol>
+    {% for category, titles in classes.items %}
+      <li>
+        {{ category }}: {{ titles|length }}
+        class{{ titles|pluralize:"es" }}
+      </li>
+    {% endfor %}
+  </ol>
+
+  <h3><code>truncatewords_html</code> and <code>safe</code></h3>
+  {{ blurb|truncatewords_html:3 }}<br>
+  {{ blurb|truncatewords_html:3|safe }}
+
+  <h3><code>yesno</code></h3>
+  <ol>
+    {% for item, remaining in inventory.items %}
+      <li class="{{ remaining|yesno:'instock,outofstock' }}">
+        {{ item }}: {{ remaining }} remaining
+        {{ remaining|yesno:',(time to place an order)' }}
+      </li>
+    {% endfor %}
+  </ol>
+
+  <h3><code>slice</code></h3>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
+  <ol id="color-list">
+    {% for color in colors|slice:':3' %}
+      <li>{{ color }}</li>
+    {% endfor %}
+    {% for color in colors|slice:'3:' %}
+      <li class="extra hidden">{{ color }}</li>
+    {% endfor %}
+  </ol>
+  <button class="btn btn-link"
+    onclick="for (const li of document.querySelectorAll('#color-list li.extra')) {
+    li.classList.toggle('hidden');
+  }">
+    Toggle Extra Colors
+  </button>
+  <h3><code>filesizeformat</code></h3>
+  <ol>
+    {% for file in files %}
+      <li>{{ file.filename }} ({{ file.filesize|filesizeformat }})</li>
+    {% endfor %}
+  </ol>
+
+  <h3><code>json_script</code></h3>
+  {{ classes|json_script:'classdata' }}
+  <ol>
+    <script>
+      const classes = JSON.parse(document.getElementById('classdata').textContent);
+      const pythonClasses = classes['Python'];
+      for (let i=0; i < pythonClasses.length; i++) {
+        document.write(`<li>${pythonClasses[i]}</li>`);
+      }
+    </script>
+  </ol>
+
+  <h3><code>repeat</code> Custom Filter</h3>
+  <p>{{ company|repeat:3 }}</p>
+  <p>{{ 5|repeat:3 }}</p>
+
+  <h3><code>clean</code> Custom Filter</h3>
+  <p>{{ user_blurb|clean }}</p>
+{% endblock %}
